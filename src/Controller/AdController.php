@@ -22,7 +22,7 @@ class AdController extends AbstractController
     public function index(AdRepository $repo)
     {
 
-        $ads =$repo->findAll();
+        $ads = $repo->findAll();
 
         return $this->render('ad/index.html.twig', [
             'controller_name' => 'AdController',
@@ -35,48 +35,51 @@ class AdController extends AbstractController
      * @Route("ads/new" , name="ads_create")
      *
      */
-   /* public function create(Request $request){
+    public function create(Request $request)
+    {
         $ad = new Ad();
 
-        $form = $this->createForm(AdType::class,$ad);
+        $form = $this->createForm(AdType::class, $ad);
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $manager = $this->getDoctrine()->getManager();
+            $ad->setAuthor($this->getUser());
             $manager->persist($ad);
             $manager->flush();
         }
-        return $this->render('ad/new.html.twig',[
+        return $this->render('ad/new.html.twig', [
             'form' => $form->createView()
         ]);
-    }*/
+    }
 
     /**
      *permet de creer une annonce
      * @Route("ads/new2" , name="ads_create2")
      *
      */
-    public function create2(Request $request){
+    public function create2(Request $request)
+    {
         $ad = new Ad();
-        $form = $this->createForm(Ad2Type::class,$ad);
+        $form = $this->createForm(Ad2Type::class, $ad);
         $form->handleRequest($request);
         $manager = $this->getDoctrine()->getManager();
-        if($form->isSubmitted() && $form->isValid()){
-            foreach ($ad->getImages() as $image){
+        if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($ad->getImages() as $image) {
                 $image->setAd($ad);
                 $manager->persist($image);
             }
 
             $manager->persist($ad);
             $manager->flush();
-            $this->addFlash('success',"l'annonce<strong>{{ad.title}}</strong>a bien été enregistrer!!!");
+            $this->addFlash('success', "l'annonce<strong>{{ad.title}}</strong>a bien été enregistrer!!!");
 
-            return $this->redirectToRoute('ads_show',[
+            return $this->redirectToRoute('ads_show', [
                 'slug' => $ad->getSlug()
             ]);
         }
-        return $this->render('ad/new2.html.twig',[
+        return $this->render('ad/new2.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -87,23 +90,24 @@ class AdController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      */
 
-    public function edit(Ad $ad,Request $request){
+    public function edit(Ad $ad, Request $request)
+    {
 
 
-        $form = $this->createForm(Ad2Type::class,$ad);
+        $form = $this->createForm(Ad2Type::class, $ad);
         $form->handleRequest($request);
         $manager = $this->getDoctrine()->getManager();
-        if($form->isSubmitted() && $form->isValid()){
-            foreach ($ad->getImages() as $image){
+        if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($ad->getImages() as $image) {
                 $image->setAd($ad);
                 $manager->persist($image);
             }
 
             $manager->persist($ad);
             $manager->flush();
-            $this->addFlash('success',"Modification bien enregistrer!!");
+            $this->addFlash('success', "Modification bien enregistrer!!");
 
-            return $this->redirectToRoute('ads_show',[
+            return $this->redirectToRoute('ads_show', [
                 'slug' => $ad->getSlug()
             ]);
         }
@@ -119,11 +123,13 @@ class AdController extends AbstractController
      *Permet d'afficher une seule annonce
      * @Route("/ads/{slug}" ,name ="ads_show")
      *
+     * @return Response
      */
 
-    public function show(Ad $ad){
+    public function show(Ad $ad)
+    {
 
-        return $this->render('ad/show.html.twig',[
+        return $this->render('ad/show.html.twig', [
             'ad' => $ad
         ]);
     }
