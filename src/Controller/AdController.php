@@ -3,16 +3,18 @@
 namespace App\Controller;
 
 use App\Entity\Ad;
+use App\Form\AdType;
 use App\Entity\Image;
 use App\Form\Ad2Type;
-use App\Form\AdType;
-use App\Repository\AdRepository;
-use Doctrine\Common\Persistence\ObjectManager;
 use http\Env\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use App\Repository\AdRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
 
 class AdController extends AbstractController
 {
@@ -31,9 +33,9 @@ class AdController extends AbstractController
     }
 
     /**
-     *permet de creer une annonce
+     * permet de creer une annonce
      * @Route("ads/new" , name="ads_create")
-     *
+     * @Security("is_granted('Role_User') and user === ad.getAuthor()")
      */
     public function create(Request $request)
     {
